@@ -1,0 +1,128 @@
+<!--
+ 
+Peanoquio
+2019-01-26
+let you post/get using the SOAP protocol
+
+Online WSDL 1.1 SOAP generator 0.2
+Julien Blitte
+ 
+-->
+<definitions xmlns:tns="my.soap.example.wsdl" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xsd1="my.soap.example.xsd" 
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" name="lets you post/get using the SOAP protocol" targetNamespace="my.soap.example.wsdl">
+    <!--  definition of datatypes  -->
+    <types>
+        <schema xmlns="http://www.w3.org/2000/10/XMLSchema" targetNamespace="my.soap.example.xsd">
+            <element name="nickname">
+                <complexType>
+                    <all>
+                        <element name="value" type="string"/>
+                    </all>
+                </complexType>
+            </element>
+            <element name="message">
+                <complexType>
+                    <all>
+                        <element name="value" type="string"/>
+                    </all>
+                </complexType>
+            </element>
+            <element name="resultcode">
+                <complexType>
+                    <all>
+                        <element name="value" type="int"/>
+                    </all>
+                </complexType>
+            </element>
+            <element name="number">
+                <complexType>
+                    <all>
+                        <element name="value" type="int"/>
+                    </all>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+    <!--  response messages  -->
+    <message name="ReturnsResultCode">
+        <part name="resultcode" type="xsd:resultcode"/>
+    </message>
+    <message name="ReturnsNumber">
+        <part name="number" type="xsd:number"/>
+    </message>
+    <message name="ReturnsMessage">
+        <part name="message" type="xsd:message"/>
+    </message>
+    <!--  request messages  -->
+    <message name="PostMessage">
+        <part name="nickname" type="xsd:nickname"/>
+        <part name="message" type="xsd:message"/>
+    </message>
+    <message name="GetNumOfMessages">
+        <part name="nickname" type="xsd:nickname"/>
+    </message>
+    <message name="RetrieveMessage">
+        <part name="nickname" type="xsd:nickname"/>
+        <part name="number" type="xsd:number"/>
+    </message>
+    <!--  server's services  -->
+    <portType name="MySOAPService">
+        <operation name="PostMessage">
+            <input message="tns:PostMessage"/>
+            <output message="tns:ReturnsResultCode"/>
+        </operation>
+        <operation name="GetNumOfMessages">
+            <input message="tns:GetNumOfMessages"/>
+            <output message="tns:ReturnsNumber"/>
+        </operation>
+        <operation name="RetrieveMessage">
+            <input message="tns:RetrieveMessage"/>
+            <output message="tns:ReturnsMessage"/>
+        </operation>
+    </portType>
+    <!--  server encoding  -->
+    <binding name="MySOAPService_webservices" type="tns:MySOAPService">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="PostMessage">
+            <soap:operation soapAction="urn:xmethods-delayed-quotes#PostMessage"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="GetNumOfMessages">
+            <soap:operation soapAction="urn:xmethods-delayed-quotes#GetNumOfMessages"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="RetrieveMessage">
+            <soap:operation soapAction="urn:xmethods-delayed-quotes#RetrieveMessage"/>
+            <input>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="urn:xmethods-delayed-quotes" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+    <!--  access to service provider  -->
+    <service name="MySoapProvider">
+        <port name="MySoapProviderPort_0" binding="MySOAPService_webservices">
+            <soap:address location="http://127.0.0.1:8001/call_soap/"/>
+        </port>
+        <port name="MySoapProviderPort_1" binding="MySOAPService_webservices">
+            <soap:address location="http://127.0.0.1:8001/call_soap/"/>
+        </port>
+    </service>
+</definitions>
