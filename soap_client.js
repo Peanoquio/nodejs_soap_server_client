@@ -1,6 +1,8 @@
 const soap = require('soap');
 const request = require('request');
 
+const ENABLE_DEBUG_LOG = false;
+
 // the options to support conneciton persistence and pooling
 const optionsForConnPersist = {
     // HTTP agent options
@@ -94,9 +96,13 @@ class SoapClientFactory {
         client.on('response', (body, response, eid) => {
             console.log('SOAP client response event');
             console.log('eid:', eid, 'body:', body);
-            console.log('response.req.socket.connecting', response.req.socket.connecting);
-            console.log('response.request.agentOptions', response.request.agentOptions);
-            console.log('response.request.pool', response.request.pool);
+            // for debugging
+            if (ENABLE_DEBUG_LOG) {
+                console.log('response.req.socket.connecting', response.req.socket.connecting);
+                console.log('response.request.agentOptions', response.request.agentOptions);
+                console.log('response.request.pool', response.request.pool);
+                console.log('response.request.timings', response.request.timings);
+            }
         });
     }
 } // end class
