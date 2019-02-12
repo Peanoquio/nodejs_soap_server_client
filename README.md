@@ -10,7 +10,11 @@ To run a sample of how this works:
 ```
 http://127.0.0.1:8001/soap?wsdl
 ```
-* To make SOAP requests, simply start the SOAP client (in another terminal) by typing this on the command line: `node soap_client.js`
+* Start the HTTP server that will use the SOAP client to make SOAP calls to the SOAP server: `node soap_server_caller.js`
+* To make SOAP requests, type this URL in the browser (calls the HTTP server which will in turn make SOAP calls to the SOAP server): 
+```
+http://127.0.0.1:8002/makeSoapCall
+```
 
 ## Dependencies
 
