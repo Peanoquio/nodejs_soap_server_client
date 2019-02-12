@@ -2,6 +2,7 @@ const express = require('express');
 const soap = require('soap');
 const bodyParser = require('body-parser');
 const xml = require('xml');
+const http = require('http');
 
 
 // the message container
@@ -74,6 +75,20 @@ const wsdlXml = require('fs').readFileSync('./wsdl/mysoap.wsdl', 'utf8');
 const app = express();
 const PORT = 8001;
 
+
+// create the HTTP server
+const server = http.createServer(app);
+// event listeners
+// This event is emitted when a new TCP stream is established. socket is typically an object of type net.Socket.
+server.on('connection', (socket) => {
+    console.log('----- A connection was made by a client!!!');
+});
+// Emitted each time there is a request. Note that there may be multiple requests per connection (in the case of HTTP Keep-Alive connections).
+server.on('request', (req, res) => {
+    console.log('----- A request was made by a client!!!');
+});
+
+
 // body parser middleware are supported (optional)
 app.use(bodyParser.raw({ type: function() {
     return true;
@@ -81,9 +96,20 @@ app.use(bodyParser.raw({ type: function() {
 
 app.listen(PORT, () => {
     console.log(`express app listening at port: ${PORT}`);
+    // the main SOAP server
     // Note: /call_soap route will be handled by soap module and all other routes & middleware will continue to work
     // the route also maps to the service -> port -> address location in the wsdl file
-    soap.listen(app, '/call_soap', myService, wsdlXml);
+    const soapServer = soap.listen(app, '/call_soap', myService, wsdlXml);
+    // Emitted for every received messages
+    soapServer.on('request', (req, methodName) => {
+        console.log('SOAP server request event - methodName:', methodName);
+        console.log('SOAP server request event - req:', req);
+    });
+    // Emitted when the SOAP Headers are not empty
+    soapServer.on('headers', (headers, methodName) => {
+        console.log('SOAP server headers event - methodName:', methodName);
+        console.log('SOAP server headers event - headers:', headers);
+    });
 });
 
 app.get('/', (req, res) => res.send('Hello World!'));
